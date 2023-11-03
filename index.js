@@ -1,5 +1,5 @@
 //Cohort API address (used default from link) and specific cohort (default from link) I am posting/pulling API data to and from. 
-const COHORT = "2109-CPU-RM-WEB-PT";
+const COHORT = "2308-ACC-PT-WEB-PT";
 const API_URL = `https://fsa-crud-2aa9294fe819.herokuapp.com/api/${COHORT}/events`;
 const state = {
   events: [],
@@ -62,9 +62,22 @@ eventList.addEventListener("click", (event) => {
  * Ask the API to create a new event based on form data
  * @param {Event} event
  */
+
+
+
+
 async function addEvent(event) {
   event.preventDefault();
   try {
+     // Convert html date input format to object, then convert to ISO Date format 
+     const dateInputValue = new Date(addEventForm.date.value);
+
+     if (isNaN(dateInputValue)) {
+       throw new Error("Invalid date format");
+     }
+
+     const isoDateString = dateInputValue.toISOString();
+// addEvent function to POST event input
     const response = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -72,7 +85,8 @@ async function addEvent(event) {
         name: addEventForm.name.value,
         description: addEventForm.description.value,
         location: addEventForm.location.value,
-        date: addEventForm.date.value,
+        date: isoDateString,
+        //date: addEventForm.date.value, (this was what I originally had but the date format errored out the update)
       }),
     });
 
